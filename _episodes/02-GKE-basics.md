@@ -26,19 +26,23 @@ Search and select "Kubernetes Engine" in the search field ("Search products and 
 Click on "Clusters" in the left bar, and in the screen that opens, choose "Create new cluster". Create the cluster with the default values.
 Once created, you will see it listed as shown
 
-Figure: createcluster.png
+<kbd>
+<img src="../fig/createcluster.png">
+</kbd>
 
 ## Open the working environment
 
 You can work from the cloud shell which opens from the tool bar
 
-Figure opencloudshell.png
+<kbd>
+<img src="../fig/opencloudshell.png">
+</kbd>
 
-In the following, all the command are typed in that shell.
+In the following, all the commands are typed in that shell.
 
 ## Install argo as a workflow engine
 
-A workflow engine is needed to define and submit jobs. In this tutorial, we use [argo](https://argoproj.github.io/argo/quick-start/) as a worflow engine.
+A workflow engine is needed to define and submit jobs. In this tutorial, we use [argo](https://argoproj.github.io/argo/quick-start/) as a workflow engine.
 You can install it in your working environment with the following commands:
 
 ```bash
@@ -51,7 +55,7 @@ mkdir gopath/bin
 mv ./argo-linux-amd64 $HOME/gopath/bin/argo
 ```
 
-Argo documentation advised GKE users to setup the following, replace with your user name
+Argo documentation advises GKE users to setup the following, replace YOURNAME and YOUREMAIL with your own user name and email
 
 ```bash
 kubectl create clusterrolebinding YOURNAME-cluster-admin-binding --clusterrole=cluster-admin --user=YOUREMAIL@gmail.com
@@ -65,7 +69,7 @@ argo version
 
 ## Run a simple test workflow
 
-Run a simple test workflow with
+To test the setup, run a simple test workflow with
 
 ```bash
 argo submit -n argo --watch https://raw.githubusercontent.com/argoproj/argo/master/examples/hello-world.yaml
@@ -77,9 +81,9 @@ argo logs -n argo @latest
 ## Define the volumes
 
 The test job above did not produce any ouput data files, just text logs. 
-The data analysis jobs will produce output files and in the following we will setup a volume where the output files will be written and from where they can be fetched.
+The data analysis jobs will produce output files and, in the following, we will setup a volume where the output files will be written and from where they can be fetched.
 All definitions are passed as "yaml" files, which you've already used in the steps above. 
-First, we will define a "persistent volume claim". Create a file `pvc-demo.yaml`with the following content
+First, we will define a "persistent volume claim". Create a file `pvc-demo.yaml` with the following content:
 
 ```yaml
 # pvc-demo.yaml
@@ -109,7 +113,7 @@ NAME       STATUS   VOLUME                                     CAPACITY   ACCESS
 pvc-demo   Bound    pvc-55449e93-3d4b-4078-b044-bc7b4514797b   3Gi        RWO            standard       2m
 ```
 
-It will take some time before the STATUS get to the state "Bound"
+It will take some time before the STATUS gets to the state "Bound"
 
 Now we can use this volume in the workflow definition. Create a workflow definition file `argo_wf_volume.yaml` with the following contents:
 
@@ -158,8 +162,8 @@ ls -l /mnt/vol: total 20 drwx------ 2 root root 16384 Sep 22 08:36 lost+found -r
 
 ## Get the ouput file
 
-The example job above produced a text file as an output. It resided in the persistent volume that the workflow job has created. 
-To copy the file to the cloud shell, we will define a container, a "storage pod" and mount the volume there so that we can get access to it.
+The example job above produced a text file as an output. It resides in the persistent volume that the workflow job has created. 
+To copy the file from that volume to the cloud shell, we will define a container, a "storage pod" and mount the volume there so that we can get access to it.
 
 Create a file `pv-pod.yaml` with the following contents:
 
@@ -190,11 +194,11 @@ kubectl cp  pv-pod:/mnt/data /tmp/poddata -n argo
 ```
 and you will get the file created by the job in `/tmp/poddata/test.txt`.
 
-## Running a CMS open data workflow
+## Run a CMS open data workflow
 
 If the steps above are successful, we are now ready to run a workflow to process CMS open data.
 
-Create a workflow file `argo-workflow.yaml`with the following content:
+Create a workflow file `argo-workflow.yaml` with the following content:
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -250,7 +254,7 @@ and follow the container logs with
 kubectl logs pod/nanoaod-argo-XXXXX  -n argo main
 ```
 
-Get the output in a similar manner as above from the storage pod.
+Get the output from the storage pod in a similar manner as it was done above.
 
 
 {% include links.md %}
