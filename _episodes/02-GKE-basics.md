@@ -11,20 +11,21 @@ questions:
 objectives:
 - "Understand how to run a simple CMS Open Data workflow in a commercial cloud environment"
 keypoints:
-- "CMS Open Data workflows can be run in a commercial cloud environemt using modern tools"
+- "CMS Open Data workflows can be run in a commercial cloud environment using modern tools"
 
 ---
 
 ## Get access to Google Cloud Platform
 For this workshop, you will have access....
+
 Alternatively, you can create a Google Cloud account and you will get a free credit worth of 300$ and valid for 90 days. 
 Login to the [Google Cloud Platform console](https://console.cloud.google.com/).
 
 ## Create your cluster
 In the [Google Cloud Platform console](https://console.cloud.google.com/), start your first project (FIXME tbc with a fresh account).
 Search and select "Kubernetes Engine" in the search field ("Search products and resources").
-Click on "Clusters" in the left bar, and in the screen that opens, choose "Create new cluster". Create the cluster with the default values.
-Once created, you will see it listed as shown
+Click on "Clusters" in the left bar, and in the screen that opens, choose "Create new cluster". Create a cluster with the default values.
+Once created, you will see it listed as shown:
 
 <kbd>
 <img src="../fig/createcluster.png">
@@ -32,13 +33,14 @@ Once created, you will see it listed as shown
 
 ## Open the working environment
 
-You can work from the cloud shell which opens from the tool bar
+You can work from the cloud shell, which opens from an icon in the tool bar, indicated by the red arrow in the figure below:
 
 <kbd>
 <img src="../fig/startcloudshell.png">
 </kbd>
 
-In the following, all the commands are typed in that shell.
+In the following, all the commands are typed in that shell. 
+We will make use of many `kubectl` commands. If interested, you can read [an overview](https://kubernetes.io/docs/reference/kubectl/overview/) of this command line tool for Kubernetes.
 
 ## Install argo as a workflow engine
 
@@ -50,12 +52,10 @@ kubectl create ns argo
 kubectl apply -n argo -f https://raw.githubusercontent.com/argoproj/argo/stable/manifests/quick-start-postgres.yaml
 curl -sLO https://github.com/argoproj/argo/releases/download/v2.10.0-rc3/argo-linux-amd64
 chmod +x argo-linux-amd64
-mkdir gopath
-mkdir gopath/bin
-mv ./argo-linux-amd64 $HOME/gopath/bin/argo
+sudo mv ./argo-linux-amd64 /usr/local/bin/argo
 ```
 
-Argo documentation advises GKE users to setup the following, replace YOURNAME and YOUREMAIL with your own user name and email
+Argo documentation advises GKE users to setup the following, replace YOURNAME and YOUREMAIL with your own user name and email:
 
 ```bash
 kubectl create clusterrolebinding YOURNAME-cluster-admin-binding --clusterrole=cluster-admin --user=YOUREMAIL@gmail.com
@@ -99,6 +99,7 @@ spec:
       storage: 3Gi
 ```
 
+
 Create and check the volume claim with 
 
 ```bash
@@ -113,7 +114,8 @@ NAME       STATUS   VOLUME                                     CAPACITY   ACCESS
 pvc-demo   Bound    pvc-55449e93-3d4b-4078-b044-bc7b4514797b   3Gi        RWO            standard       2m
 ```
 
-It will take some time before the STATUS gets to the state "Bound"
+
+Note that it may take some time before the STATUS gets to the state "Bound"
 
 Now we can use this volume in the workflow definition. Create a workflow definition file `argo_wf_volume.yaml` with the following contents:
 
@@ -140,6 +142,7 @@ spec:
       - name: task-pv-storage
         mountPath: /mnt/vol
 ```
+
 
 Submit and check this workflow with 
 
@@ -236,13 +239,13 @@ spec:
         mountPath: /mnt/vol
 ```
 
-Submit the job with (`--watch` gives a continuous follow-up of the progress)
+Submit the job with
 
 ```bash
 argo submit -n argo argo-workflow.yaml --watch
 ```
 
-Use the process name (`nanoaod-argo-XXXXX`) which you can also find with
+The option `--watch` gives a continuous follow-up of the progress. To get the logs of the job, use the process name (`nanoaod-argo-XXXXX`) which you can also find with
 
 ```bash
 argo get -n argo @latest
@@ -254,7 +257,7 @@ and follow the container logs with
 kubectl logs pod/nanoaod-argo-XXXXX  -n argo main
 ```
 
-Get the output from the storage pod in a similar manner as it was done above.
+Get the output file `output.root` from the storage pod in a similar manner as it was done above.
 
 
 {% include links.md %}
