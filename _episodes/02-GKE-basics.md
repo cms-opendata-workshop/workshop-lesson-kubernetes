@@ -35,7 +35,7 @@ Once created, you will see it listed as shown
 You can work from the cloud shell which opens from the tool bar
 
 <kbd>
-<img src="../fig/opencloudshell.png">
+<img src="../fig/startcloudshell.png">
 </kbd>
 
 In the following, all the commands are typed in that shell.
