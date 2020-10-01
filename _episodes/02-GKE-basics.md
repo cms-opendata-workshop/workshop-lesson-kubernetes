@@ -1,7 +1,7 @@
 ---
 title: "Getting started with Google Kubernetes Engine"
-teaching: 0
-exercises: 0
+teaching: 15
+exercises: 15
 questions:
 - "How to create a cluster on Google Cloud Platform?"
 - "How to setup Google Kubernetes Engine?"
@@ -16,49 +16,58 @@ keypoints:
 ---
 
 ## Get access to Google Cloud Platform
-For this workshop, you will have access....
 
-Alternatively, you can create a Google Cloud account and you will get a free credit worth of 300$ and valid for 90 days. 
-Login to the [Google Cloud Platform console](https://console.cloud.google.com/).
+Usually, you would need to create your own account (and add a credit card) in
+order to be able to access the public cloud. For this workshop, however, you
+will have access to Google Cloud via the
+[ARCHIVER project](https://www.archiver-project.eu/).
+Alternatively, you can create a Google Cloud account and you will get free
+credits worth $300, valid for 90 days.
 
-## Create your cluster
-In the [Google Cloud Platform console](https://console.cloud.google.com/), start your first project (FIXME tbc with a fresh account).
-Search and select "Kubernetes Engine" in the search field ("Search products and resources").
-Click on "Clusters" in the left bar, and in the screen that opens, choose "Create new cluster". Create a cluster with the default values.
-Once created, you will see it listed as shown:
+The following steps will be performed using the
+[Google Cloud Platform console](https://console.cloud.google.com/).
 
-<kbd>
-<img src="../fig/createcluster.png">
-</kbd>
+## Find your cluster
+
+By now, you should already have created your first Kubernetes cluster.
+In case you do not find it, use the "Search products and resources" field
+to search and select "Kubernetes Engine".
 
 ## Open the working environment
 
-You can work from the cloud shell, which opens from an icon in the tool bar, indicated by the red arrow in the figure below:
+You can work from the cloud shell, which opens from an icon in the tool bar,
+indicated by the red arrow in the figure below:
 
 <kbd>
 <img src="../fig/startcloudshell.png">
 </kbd>
 
-In the following, all the commands are typed in that shell. 
-We will make use of many `kubectl` commands. If interested, you can read [an overview](https://kubernetes.io/docs/reference/kubectl/overview/) of this command line tool for Kubernetes.
+In the following, all the commands are typed in that shell.
+We will make use of many `kubectl` commands. If interested, you can read
+[an overview](https://kubernetes.io/docs/reference/kubectl/overview/)
+of this command line tool for Kubernetes.
 
 ## Install argo as a workflow engine
 
-A workflow engine is needed to define and submit jobs. In this tutorial, we use [argo](https://argoproj.github.io/argo/quick-start/) as a workflow engine.
+A workflow engine is needed to define and submit jobs. In this tutorial,
+we use
+[argo](https://argoproj.github.io/argo/quick-start/) as a workflow engine.
 You can install it in your working environment with the following commands:
 
 ```bash
 kubectl create ns argo
 kubectl apply -n argo -f https://raw.githubusercontent.com/argoproj/argo/stable/manifests/quick-start-postgres.yaml
-curl -sLO https://github.com/argoproj/argo/releases/download/v2.10.0-rc3/argo-linux-amd64
+curl -sLO https://github.com/argoproj/argo/releases/download/v2.11.1/argo-linux-amd64
 chmod +x argo-linux-amd64
 sudo mv ./argo-linux-amd64 /usr/local/bin/argo
 ```
 
-Argo documentation advises GKE users to setup the following, replace YOURNAME and YOUREMAIL with your own user name and email:
+You need to execute the following command so that the argo workflow controller
+has sufficient rights to manage the workflow pods.
+Replace XXX with the number for the login credentials you received.
 
 ```bash
-kubectl create clusterrolebinding YOURNAME-cluster-admin-binding --clusterrole=cluster-admin --user=YOUREMAIL@gmail.com
+kubectl create clusterrolebinding cern-cms-cluster-admin-binding --clusterrole=cluster-admin --user=cms-gXXX@arkivum.com
 ```
 
 You can now check that argo is available with
@@ -76,13 +85,19 @@ argo submit -n argo --watch https://raw.githubusercontent.com/argoproj/argo/mast
 argo list -n argo
 argo get -n argo @latest
 argo logs -n argo @latest
+argo delete -n argo @latest
 ```
+
+Please mind that it is important to delete your workflows once they have
+completed. If you do not do this, the pods associated with the workflow
+will remain scheduled in the cluster, which might lead to additional charges.
+You will learn how to automatically remove them later.
 
 ## Define the volumes
 
-The test job above did not produce any ouput data files, just text logs. 
+The test job above did not produce any ouput data files, just text logs.
 The data analysis jobs will produce output files and, in the following, we will setup a volume where the output files will be written and from where they can be fetched.
-All definitions are passed as "yaml" files, which you've already used in the steps above. 
+All definitions are passed as "yaml" files, which you've already used in the steps above.
 First, we will define a "persistent volume claim". Create a file `pvc-demo.yaml` with the following content:
 
 ```yaml
@@ -100,7 +115,7 @@ spec:
 ```
 
 
-Create and check the volume claim with 
+Create and check the volume claim with
 
 ```bash
 kubectl apply -f pvc-demo.yaml -n argo
@@ -144,11 +159,11 @@ spec:
 ```
 
 
-Submit and check this workflow with 
+Submit and check this workflow with
 
 ```bash
-argo submit -n argo argo_wf_volume.yaml 
-argo list -n argo 
+argo submit -n argo argo_wf_volume.yaml
+argo list -n argo
 ```
 
 Take the name of the workflow from the ouput (replace XXXXX in the following command) and check the logs
@@ -165,7 +180,7 @@ ls -l /mnt/vol: total 20 drwx------ 2 root root 16384 Sep 22 08:36 lost+found -r
 
 ## Get the ouput file
 
-The example job above produced a text file as an output. It resides in the persistent volume that the workflow job has created. 
+The example job above produced a text file as an output. It resides in the persistent volume that the workflow job has created.
 To copy the file from that volume to the cloud shell, we will define a container, a "storage pod" and mount the volume there so that we can get access to it.
 
 Create a file `pv-pod.yaml` with the following contents:
