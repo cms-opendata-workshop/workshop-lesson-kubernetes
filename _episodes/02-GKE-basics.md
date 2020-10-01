@@ -22,16 +22,24 @@ order to be able to access the public cloud. For this workshop, however, you
 will have access to Google Cloud via the
 [ARCHIVER project](https://www.archiver-project.eu/).
 Alternatively, you can create a Google Cloud account and you will get free
-credits worth $300, valid for 90 days.
+credits worth $300, valid for 90 days (requires a credit card).
 
 The following steps will be performed using the
 [Google Cloud Platform console](https://console.cloud.google.com/).
+
+> ## Use an incognito/private browser window
+>
+> We strongly recommend you use an incognito/private browser window
+> to avoid possible confusion and mixups with personal Google accounts
+> you might have.
+>
+{: .callout}
 
 ## Find your cluster
 
 By now, you should already have created your first Kubernetes cluster.
 In case you do not find it, use the "Search products and resources" field
-to search and select "Kubernetes Engine".
+to search and select "Kubernetes Engine". It should show up there.
 
 ## Open the working environment
 
@@ -49,10 +57,11 @@ of this command line tool for Kubernetes.
 
 ## Install argo as a workflow engine
 
-A workflow engine is needed to define and submit jobs. In this tutorial,
-we use
-[argo](https://argoproj.github.io/argo/quick-start/) as a workflow engine.
-You can install it in your working environment with the following commands:
+While jobs can also be run manually, a workflow engine makes defining and
+submitting jobs easier. In this tutorial, we use
+[argo](https://argoproj.github.io/argo/quick-start/).
+Install it into your working environment with the following commands
+(all commands to be entered into the cloud shell):
 
 ```bash
 kubectl create ns argo
@@ -62,9 +71,12 @@ chmod +x argo-linux-amd64
 sudo mv ./argo-linux-amd64 /usr/local/bin/argo
 ```
 
+This will also install the argo binary, which makes managing the workflows
+easier.
+
 You need to execute the following command so that the argo workflow controller
 has sufficient rights to manage the workflow pods.
-Replace XXX with the number for the login credentials you received.
+Replace `XXX` with the number for the login credentials you received.
 
 ```bash
 kubectl create clusterrolebinding cern-cms-cluster-admin-binding --clusterrole=cluster-admin --user=cms-gXXX@arkivum.com
@@ -93,48 +105,84 @@ completed. If you do not do this, the pods associated with the workflow
 will remain scheduled in the cluster, which might lead to additional charges.
 You will learn how to automatically remove them later.
 
-## Define the volumes
+> ## Kubernetes namespaces
+>
+> The above commands as well as most of the following use a flag `-n argo`,
+> which defines the namespace in which the resources are queried or created.
+> [Namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
+> separate resources in the cluster, effectively giving you multiple virtual
+> clusters within a cluster.
+>
+> You can change the default namespace to `argo` as follows:
+>
+> ~~~
+> kubectl config set-context --current --namespace=argo
+> ~~~
+> {: .bash}
+>
+{: .testimonial}
 
-The test job above did not produce any ouput data files, just text logs.
-The data analysis jobs will produce output files and, in the following, we will setup a volume where the output files will be written and from where they can be fetched.
-All definitions are passed as "yaml" files, which you've already used in the steps above.
-First, we will define a "persistent volume claim". Create a file `pvc-demo.yaml` with the following content:
+## Defining a storage volume
 
-```yaml
-# pvc-demo.yaml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: pvc-demo
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 3Gi
+The test job above did not produce any output data files, just text logs.
+The data analysis jobs will produce output files and, in the following, we will
+go through a few steps to setup a volume where to which the output files will be
+written and from where they can be fetched.
+All definitions are passed as "yaml" files, which you've already used in the
+steps above. Due to some restrictions of the Google Kubernetes Engine, we need
+to use an NFS persistent volumes to allow parallel access (see also
+[this post](https://medium.com/platformer-blog/nfs-persistent-volumes-with-kubernetes-a-case-study-ce1ed6e2c266)).
+
+The following commands will take care of this. You can look at the content of
+the files that are directly applied from GitHub at the
+[workshop-paylod-kubernetes](https://github.com/cms-opendata-workshop/workshop-payload-kubernetes)
+repository.
+
+```shell
+kubectl apply -n argo -f https://raw.githubusercontent.com/cms-opendata-workshop/workshop-payload-kubernetes/master/001-nfs-server.yaml
+kubectl apply -n argo -f https://raw.githubusercontent.com/cms-opendata-workshop/workshop-payload-kubernetes/master/002-nfs-server-service.yaml
 ```
 
+Then download the manifest needed to create the _PersistentVolume_ and
+the _PersistentVolumeClaim_:
 
-Create and check the volume claim with
+```shell
+curl -OL https://raw.githubusercontent.com/cms-opendata-workshop/workshop-payload-kubernetes/master/003-pv-pvc.yaml
+```
+
+In the line containing `server:` replace `<Add IP here>` by the output
+of the following command:
+
+```shell
+kubectl get svc nfs-server |grep ClusterIP | awk '{ print $3; }'
+```
+
+This command queries the `nfs-server` service that we created above
+and then filters out the `ClusterIP` that we need to connect to the
+NFS server.
+
+You can edit files directly in the console or by opening the built-in
+graphical editor.
+
+Let's confirm that this worked:
 
 ```bash
-kubectl apply -f pvc-demo.yaml -n argo
-kubectl get pvc -n argo
+kubectl get pvc nfs -n argo
 ```
 
-You will see an output similar to this
+You will see output similar to this
 
+```output
+NAME   STATUS   VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+nfs    Bound    nfs      10Gi       RWX                           5h2m
 ```
-NAME       STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-pvc-demo   Bound    pvc-55449e93-3d4b-4078-b044-bc7b4514797b   3Gi        RWO            standard       2m
-```
 
-
-Note that it may take some time before the STATUS gets to the state "Bound"
+Note that it may take some time before the STATUS gets to the state "Bound".
 
 Now we can use this volume in the workflow definition. Create a workflow definition file `argo_wf_volume.yaml` with the following contents:
 
 ```yaml
+# argo-wf-volume.ysml
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
@@ -144,7 +192,7 @@ spec:
   volumes:
     - name: task-pv-storage
       persistentVolumeClaim:
-        claimName: pvc-demo
+        claimName: nfs
   templates:
   - name: test-hostpath
     script:
@@ -158,15 +206,15 @@ spec:
         mountPath: /mnt/vol
 ```
 
-
 Submit and check this workflow with
 
 ```bash
-argo submit -n argo argo_wf_volume.yaml
+argo submit -n argo argo-wf-volume.yaml
 argo list -n argo
 ```
 
-Take the name of the workflow from the ouput (replace XXXXX in the following command) and check the logs
+Take the name of the workflow from the output (replace XXXXX in the following command)
+and check the logs:
 
 ```bash
 kubectl logs pod/test-hostpath-XXXXX  -n argo main
@@ -174,7 +222,7 @@ kubectl logs pod/test-hostpath-XXXXX  -n argo main
 
 Once the job is done, you will see something like:
 
-```
+```output
 ls -l /mnt/vol: total 20 drwx------ 2 root root 16384 Sep 22 08:36 lost+found -rw-r--r-- 1 root root 18 Sep 22 08:36 test.txt
 ```
 
@@ -186,6 +234,7 @@ To copy the file from that volume to the cloud shell, we will define a container
 Create a file `pv-pod.yaml` with the following contents:
 
 ```yaml
+# pv-pod.yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -194,7 +243,7 @@ spec:
   volumes:
     - name: task-pv-storage
       persistentVolumeClaim:
-        claimName: pvc-demo
+        claimName: nfs
   containers:
     - name: pv-container
       image: busybox
@@ -210,6 +259,7 @@ Create the storage pod and copy the files from there
 kubectl apply -f pv-pod.yaml -n argo
 kubectl cp  pv-pod:/mnt/data /tmp/poddata -n argo
 ```
+
 and you will get the file created by the job in `/tmp/poddata/test.txt`.
 
 ## Run a CMS open data workflow
