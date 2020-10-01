@@ -1,15 +1,20 @@
 ---
 title: "Introduction"
-teaching: 0
+teaching: 30
 exercises: 0
 questions:
-- "Key question (FIXME)"
+- "What is Kubernetes?"
+- "Why would I use Kubernetes?"
 objectives:
-- "First learning objective. (FIXME)"
+- "Get a rough understanding of Kubernetes and some of its components"
 keypoints:
-- "First key point. Brief Answer to questions. (FIXME)"
+- "Kubernetes is a powerful tool to schedule containers."
 ---
-FIXME
+
+The introduction will be performed using slides available on the
+[Workshop Indico page](https://indico.cern.ch/event/882586/contributions/4042623/).
+
+Once you have successfully completed the steps there, please continue to the
+next episode.
 
 {% include links.md %}
-
