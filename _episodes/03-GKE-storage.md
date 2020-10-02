@@ -35,7 +35,7 @@ the files that are directly applied from GitHub at the
 repository.
 
 ```shell
-kubectl apply -n argo -f https://raw.githubusercontent.com/cms-opendata-workshop/workshop-payload-kubernetes/master/001-nfs-server.yaml
+curl -LO https://raw.githubusercontent.com/cms-opendata-workshop/workshop-payload-kubernetes/master/001-nfs-server.yaml
 ```
 
 The file looks like this:
