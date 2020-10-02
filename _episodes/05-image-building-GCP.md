@@ -32,7 +32,7 @@ $COMPILER -g -O3 -Wall -Wextra -Wpedantic -o skim skim.cxx $FLAGS
 
 Finally ceate the file `Dockerfile` with the following contents
 
-```bash
+```yaml
 # The Dockerfile defines the image's environment
 # Import ROOT runtime
 FROM rootproject/root-conda:6.18.04
@@ -71,9 +71,13 @@ where `[PROJECT-ID]` is your GCP project ID. You can find your ID by clicking yo
 ```shell
 docker build -t gcr.io/cern-cms/cms-gXXX:higgstautau .
 ```
-Replace XXX with the number for the login credentials you received.
+Replace `XXX` with the number for the login credentials you received.
 
-Note that all attendants of this workshop are sharing the same registry! Hence you need to try to choose a unique name and tag combination.
+> ## Choose a unique name
+>
+>Note that all attendants of this workshop are sharing the same registry! Hence you need to try to choose a
+unique name and tag combination.
+{: .callout}
 
 ## Adding your image to the container registry
 
@@ -89,7 +93,10 @@ To push the image run
 docker push gcr.io/cern-cms/cms-gXXX:higgstautau
 ```
 
-You can view images hosted by the container registry via the cloud console, or by visiting the image's registry name in your web browser at `http://gcr.io/cern-cms/cms-gXXX`.
+> ## View your images
+>
+> You can view images hosted by the container registry via the cloud console, or by visiting the image's registry name in your web browser at `http://gcr.io/cern-cms/cms-gXXX`.
+{: .callout}
 
 ## Cleaning up your private registry
 
