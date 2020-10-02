@@ -180,6 +180,12 @@ NFS server.
 You can edit files directly in the console or by opening the built-in
 graphical editor.
 
+Apply this manifest:
+
+```shell
+kubectl apply -n argo -f 003-pv-pvc.yaml
+```
+
 Let's confirm that this worked:
 
 ```bash
@@ -195,7 +201,7 @@ nfs    Bound    nfs      10Gi       RWX                           5h2m
 
 Note that it may take some time before the STATUS gets to the state "Bound".
 
-Now we can use this volume in the workflow definition. Create a workflow definition file `argo_wf_volume.yaml` with the following contents:
+Now we can use this volume in the workflow definition. Create a workflow definition file `argo-wf-volume.yaml` with the following contents:
 
 ```yaml
 # argo-wf-volume.ysml
