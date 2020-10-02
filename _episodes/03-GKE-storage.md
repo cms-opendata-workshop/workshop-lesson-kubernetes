@@ -158,7 +158,7 @@ In the line containing `server:` replace `<Add IP here>` by the output
 of the following command:
 
 ```shell
-kubectl get svc nfs-server-<NUMBER> |grep ClusterIP | awk '{ print $3; }'
+kubectl get -n argo svc nfs-server-<NUMBER> |grep ClusterIP | awk '{ print $3; }'
 ```
 
 This command queries the `nfs-server` service that we created above
