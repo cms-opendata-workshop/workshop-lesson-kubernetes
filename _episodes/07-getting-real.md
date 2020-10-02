@@ -32,7 +32,7 @@ spec:
       value: |
         [
           {"file": "GluGluToHToTauTau", "x-section": "19.6", "process": "ggH"},
-          {"file": "VBF_HToTauTau", "x-section": "1.55", "process": "ggH"},
+          {"file": "VBF_HToTauTau", "x-section": "1.55", "process": "qqH"},
           {"file": "DYJetsToLL", "x-section": "3503.7", "process": "ZTT"},
           {"file": "TTbar", "x-section": "255.2", "process": "TT"},
           {"file": "W1JetsToLNu", "x-section": "6381.2", "process": "W1J"},
