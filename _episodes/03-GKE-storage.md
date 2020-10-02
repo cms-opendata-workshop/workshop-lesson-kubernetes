@@ -34,6 +34,14 @@ the files that are directly applied from GitHub at the
 [workshop-paylod-kubernetes](https://github.com/cms-opendata-workshop/workshop-payload-kubernetes)
 repository.
 
+As a first step, a volume needs to be created:
+
+```shell
+gcloud compute disks create --size=100GB --zone=us-center1-c gce-nfs-disk-<NUMBER>
+```
+
+Replace `<NUMBER>` by your account number, e.g. `023`.
+
 ```shell
 curl -LO https://raw.githubusercontent.com/cms-opendata-workshop/workshop-payload-kubernetes/master/001-nfs-server.yaml
 ```
