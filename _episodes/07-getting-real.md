@@ -104,7 +104,6 @@ spec:
       image: alintulu/root:higgstautau-compiled
       command: [sh]
       source: |
-        cd /payload-master
         LUMI=11467.0 # Integrated luminosity of the unscaled dataset
         SCALE=0.1 # Same fraction as used to down-size the analysis
         mkdir -p $HOME/skimm
@@ -130,7 +129,6 @@ spec:
       image: alintulu/root:higgstautau-compiled
       command: [sh]
       source: |
-        cd /payload-master
         mkdir -p $HOME/histogram
         python histograms.py /mnt/vol/{{inputs.parameters.file}}-skimmed.root {{inputs.parameters.process}} $HOME/histogram/{{inputs.parameters.file}}-histogram-{{inputs.parameters.process}}.root
         ls -l $HOME/histogram
@@ -150,7 +148,6 @@ spec:
       image: alintulu/root:higgstautau-compiled
       command: [sh]
       source: |
-        cd /payload-master
         hadd -f /mnt/vol/histogram.root /mnt/vol/*-histogram-*.root
         ls -l /mnt/vol
       volumeMounts:
@@ -168,7 +165,6 @@ spec:
       image: alintulu/root:higgstautau-compiled
       command: [sh]
       source: |
-        cd /payload-master
         SCALE=0.1
         python plot.py /mnt/vol/histogram.root /mnt/vol $SCALE
         ls -l /mnt/vol
@@ -181,7 +177,6 @@ spec:
       image: alintulu/root:higgstautau-compiled
       command: [sh]
       source: |
-        cd /payload-master
         python fit.py /mnt/vol/histogram.root /mnt/vol
         ls -l /mnt/vol
       volumeMounts:
