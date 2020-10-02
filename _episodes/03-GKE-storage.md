@@ -43,6 +43,21 @@ gcloud compute disks create --size=100GB --zone=us-central1-c gce-nfs-disk-<NUMB
 Replace `<NUMBER>` by your account number, e.g. `023`. The zone should be the
 same as the one of the cluster created (no need to change here).
 
+The output will look like this (don't worry about the warnings):
+
+```output
+WARNING: You have selected a disk size of under [200GB]. This may result in poor I/O performance. For more information, see: https://developers.google.com/compute/docs/disks#per
+formance.
+Created [https://www.googleapis.com/compute/v1/projects/cern-cms/zones/us-central1-c/disks/gce-nfs-disk-001].
+NAME              ZONE           SIZE_GB  TYPE         STATUS
+gce-nfs-disk-001  us-central1-c  100      pd-standard  READY
+New disks are unformatted. You must format and mount a disk before it
+can be used. You can find instructions on how to do this at:
+https://cloud.google.com/compute/docs/disks/add-persistent-disk#formatting
+```
+
+Now, let's get to using this disk:
+
 ```shell
 curl -LO https://raw.githubusercontent.com/cms-opendata-workshop/workshop-payload-kubernetes/master/001-nfs-server.yaml
 ```
