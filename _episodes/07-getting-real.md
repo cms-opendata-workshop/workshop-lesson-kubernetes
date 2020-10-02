@@ -34,7 +34,7 @@ spec:
           {"file": "GluGluToHToTauTau", "x-section": "19.6", "process": "ggH"},
           {"file": "VBF_HToTauTau", "x-section": "1.55", "process": "qqH"},
           {"file": "DYJetsToLL", "x-section": "3503.7", "process": "ZTT"},
-          {"file": "TTbar", "x-section": "255.2", "process": "TT"},
+          {"file": "TTbar", "x-section": "225.2", "process": "TT"},
           {"file": "W1JetsToLNu", "x-section": "6381.2", "process": "W1J"},
           {"file": "W2JetsToLNu", "x-section": "2039.8", "process": "W2J"},
           {"file": "W3JetsToLNu", "x-section": "612.5", "process": "W3J"},
@@ -45,10 +45,10 @@ spec:
       value: |
         [
           {"file": "GluGluToHToTauTau", "x-section": "19.6", "process": "ggH"},
-          {"file": "VBF_HToTauTau", "x-section": "1.55", "process": "ggH"},
+          {"file": "VBF_HToTauTau", "x-section": "1.55", "process": "qqH"},
           {"file": "DYJetsToLL", "x-section": "3503.7", "process": "ZTT"},
           {"file": "DYJetsToLL", "x-section": "3503.7", "process": "ZLL"},
-          {"file": "TTbar", "x-section": "255.1", "process": "TT"},
+          {"file": "TTbar", "x-section": "225.2", "process": "TT"},
           {"file": "W1JetsToLNu", "x-section": "6381.2", "process": "W1J"},
           {"file": "W2JetsToLNu", "x-section": "2039.8", "process": "W2J"},
           {"file": "W3JetsToLNu", "x-section": "612.5", "process": "W3J"},
