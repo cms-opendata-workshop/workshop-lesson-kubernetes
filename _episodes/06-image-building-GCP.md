@@ -54,7 +54,7 @@ RUN ./compile.sh
 
 ## Building your Docker image
 
-Building your Docker image on GCP is done in the same was as you were showed earlier during the workshop.
+Building your Docker image on GCP is done in the same way as you were showed earlier during the workshop.
 
 ```shell
 docker build -t [IMAGE-NAME]:[TAG] .
@@ -75,8 +75,9 @@ Replace `XXX` with the number for the login credentials you received.
 
 > ## Choose a unique name
 >
->Note that all attendants of this workshop are sharing the same registry! Hence you need to try to choose a
-unique name and tag combination.
+>Note that all attendants of this workshop are sharing the same registry! If you fail to choose a 
+>unique name and tag combination you risk overwriting the image of a fellow attendee. Naming your
+>image with the number of your login credentials should avoid that from happening.
 {: .callout}
 
 ## Adding your image to the container registry
