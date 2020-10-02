@@ -225,7 +225,7 @@ spec:
   volumes:
     - name: task-pv-storage
       persistentVolumeClaim:
-        claimName: nfs
+        claimName: nfs-<NUMBER>
   templates:
   - name: test-hostpath
     script:
@@ -276,7 +276,7 @@ spec:
   volumes:
     - name: task-pv-storage
       persistentVolumeClaim:
-        claimName: nfs
+        claimName: nfs-<NUMBER>
   containers:
     - name: pv-container
       image: busybox
@@ -312,7 +312,7 @@ spec:
   volumes:
   - name: task-pv-storage
     persistentVolumeClaim:
-      claimName: nfs
+      claimName: nfs-<NUMBER>
   templates:
   - name: nanoaod-argo
     script:
