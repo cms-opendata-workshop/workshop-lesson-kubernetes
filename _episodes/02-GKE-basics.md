@@ -73,6 +73,14 @@ sudo mv ./argo-linux-amd64 /usr/local/bin/argo
 This will also install the argo binary, which makes managing the workflows
 easier.
 
+> ## Reconnecting after longer time away
+>
+> In case you leave your computer, you might have to reconnect to the CloudShell
+> again, and also on a different computer. If the `argo` command is not found,
+> run the command above again starting from the `curl` command.
+>
+{: .callout}
+
 You need to execute the following command so that the argo workflow controller
 has sufficient rights to manage the workflow pods.
 Replace `XXX` with the number for the login credentials you received.
