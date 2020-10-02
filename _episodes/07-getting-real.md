@@ -180,7 +180,8 @@ spec:
         python fit.py /mnt/vol/histogram.root /mnt/vol
         ls -l /mnt/vol
       volumeMounts:
-
+      - name: task-pv-storage
+        mountPath: /mnt/vol
 ```
 
 Adjust the workflow as follows:
