@@ -72,8 +72,6 @@ spec:
             name: mypvc
       volumes:
         - name: mypvc
-          capacity:
-            storage: 100Gi
           gcePersistentDisk:
             pdName: gce-nfs-disk-<NUMBER>
             fsType: ext4
@@ -125,16 +123,47 @@ the _PersistentVolumeClaim_:
 curl -OL https://raw.githubusercontent.com/cms-opendata-workshop/workshop-payload-kubernetes/master/003-pv-pvc.yaml
 ```
 
+The file looks as follows:
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: <Add IP here>
+    path: "/"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: nfs
+  namespace: argo
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 100Gi
+```
+
 In the line containing `server:` replace `<Add IP here>` by the output
 of the following command:
 
 ```shell
-kubectl get svc nfs-server |grep ClusterIP | awk '{ print $3; }'
+kubectl get svc nfs-server-<NUMBER> |grep ClusterIP | awk '{ print $3; }'
 ```
 
 This command queries the `nfs-server` service that we created above
 and then filters out the `ClusterIP` that we need to connect to the
-NFS server.
+NFS server. Replace `<NUMBER>` as before.
 
 You can edit files directly in the console or by opening the built-in
 graphical editor.
