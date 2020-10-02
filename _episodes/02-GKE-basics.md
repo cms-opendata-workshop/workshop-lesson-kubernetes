@@ -88,6 +88,21 @@ You can now check that argo is available with
 argo version
 ```
 
+We need to apply a small patch to the default argo config. Create a file called
+`patch-workflow-controller-configmap.yaml`:
+
+```yaml
+data:
+  artifactRepository: |
+    archiveLogs: false
+```
+
+Apply:
+
+```shell
+kubectl patch configmap workflow-controller-configmap -n argo --patch "$(cat patch-workflow-controller-configmap.yaml)"
+```
+
 ## Run a simple test workflow
 
 To test the setup, run a simple test workflow with
@@ -266,9 +281,10 @@ and you will get the file created by the job in `/tmp/poddata/test.txt`.
 
 If the steps above are successful, we are now ready to run a workflow to process CMS open data.
 
-Create a workflow file `argo-workflow.yaml` with the following content:
+Create a workflow file `argo-wf-cms.yaml` with the following content:
 
 ```yaml
+# argo-wf-cms.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
@@ -278,7 +294,7 @@ spec:
   volumes:
   - name: task-pv-storage
     persistentVolumeClaim:
-      claimName: pvc-demo
+      claimName: nfs
   templates:
   - name: nanoaod-argo
     script:
@@ -307,7 +323,7 @@ spec:
 Submit the job with
 
 ```bash
-argo submit -n argo argo-workflow.yaml --watch
+argo submit -n argo argo-wf-cms.yaml --watch
 ```
 
 The option `--watch` gives a continuous follow-up of the progress. To get the logs of the job, use the process name (`nanoaod-argo-XXXXX`) which you can also find with
@@ -323,6 +339,9 @@ kubectl logs pod/nanoaod-argo-XXXXX  -n argo main
 ```
 
 Get the output file `output.root` from the storage pod in a similar manner as it was done above.
+
+## Accessing files via http
+
 
 
 {% include links.md %}
