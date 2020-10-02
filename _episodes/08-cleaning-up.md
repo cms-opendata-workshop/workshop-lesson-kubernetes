@@ -9,3 +9,8 @@ objectives:
 keypoints:
 - "The cluster and disks should be deleted if not needed anymore."
 ---
+
+Two things need to be done:
+
+- In the [Cluster Overview](https://console.cloud.google.com/kubernetes/list?project=cern-cms&cloudshell=true) page, click on the trashbin icon next to your cluster and confirm.
+- In the [Disks Overview](https://console.cloud.google.com/compute/disks?cloudshell=true&project=cern-cms), delete the disk you created
