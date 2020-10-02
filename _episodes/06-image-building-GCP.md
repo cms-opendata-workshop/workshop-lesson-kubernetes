@@ -98,7 +98,9 @@ docker push gcr.io/cern-cms/root-conda-<NUMBER>:higgstautau
 
 ## Cleaning up your private registry
 
-To avoid incurring charges to your GCP account you can remove your Docker image from the container registry. Run the follwoing command
+To avoid incurring charges to your GCP account you can remove your Docker image from the container registry. Do not execute this command right now, we want to use our container in the next step.
+
+When it is time to remove your Docker image, execute the following command:
 
 ```shell
 gcloud container images delete gcr.io/cern-cms/root-conda-<NUMBER>:higgstautau --force-delete-tags

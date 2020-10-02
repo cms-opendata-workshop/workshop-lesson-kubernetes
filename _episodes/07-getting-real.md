@@ -13,6 +13,8 @@ keypoints:
 So far we've run smaller examples, but now we have everything at hands to run
 physics analysis jobs in parallel.
 
+Create a workflow file `higgs-tau-tau-workflow.yaml` with the following content:
+
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
@@ -101,7 +103,7 @@ spec:
       - name: file
       - name: x-section
     script:
-      image: alintulu/root:higgstautau-compiled
+      image: gcr.io/cern-cms/root-conda-002:higgstautau
       command: [sh]
       source: |
         LUMI=11467.0 # Integrated luminosity of the unscaled dataset
@@ -126,7 +128,7 @@ spec:
       - name: file
       - name: process
     script:
-      image: alintulu/root:higgstautau-compiled
+      image: gcr.io/cern-cms/root-conda-002:higgstautau
       command: [sh]
       source: |
         mkdir -p $HOME/histogram
@@ -145,7 +147,7 @@ spec:
 
   - name: merge-template
     script:
-      image: alintulu/root:higgstautau-compiled
+      image: gcr.io/cern-cms/root-conda-002:higgstautau
       command: [sh]
       source: |
         hadd -f /mnt/vol/histogram.root /mnt/vol/*-histogram-*.root
@@ -162,7 +164,7 @@ spec:
 
   - name: plot-template
     script:
-      image: alintulu/root:higgstautau-compiled
+      image: gcr.io/cern-cms/root-conda-002:higgstautau
       command: [sh]
       source: |
         SCALE=0.1
@@ -174,7 +176,7 @@ spec:
 
   - name: fit-template
     script:
-      image: alintulu/root:higgstautau-compiled
+      image: gcr.io/cern-cms/root-conda-002:higgstautau
       command: [sh]
       source: |
         python fit.py /mnt/vol/histogram.root /mnt/vol
@@ -184,9 +186,9 @@ spec:
         mountPath: /mnt/vol
 ```
 
-Adjust the workflow as follows (call the file `higgs-tau-tau-workflow.yaml`):
+Adjust the workflow as follows:
 
-- Replace the `image` in all places by the one you created.
+- Replace `gcr.io/cern-cms/root-conda-002:higgstautau` in all places with the name of the image you created
 - Adjust `claimName: nfs-<NUMBER>`
 
 Then execute the workflow and keep your thumbs pressed:
