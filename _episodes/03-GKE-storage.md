@@ -37,10 +37,11 @@ repository.
 As a first step, a volume needs to be created:
 
 ```shell
-gcloud compute disks create --size=100GB --zone=us-center1-c gce-nfs-disk-<NUMBER>
+gcloud compute disks create --size=100GB --zone=us-central1-c gce-nfs-disk-<NUMBER>
 ```
 
-Replace `<NUMBER>` by your account number, e.g. `023`.
+Replace `<NUMBER>` by your account number, e.g. `023`. The zone should be the
+same as the one of the cluster created (no need to change here).
 
 ```shell
 curl -LO https://raw.githubusercontent.com/cms-opendata-workshop/workshop-payload-kubernetes/master/001-nfs-server.yaml
