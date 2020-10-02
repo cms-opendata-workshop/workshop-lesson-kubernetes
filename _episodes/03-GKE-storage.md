@@ -68,7 +68,7 @@ The file looks like this:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: nfs-server
+  name: nfs-server-<NUMBER>
 spec:
   replicas: 1
   selector:
@@ -155,10 +155,10 @@ The file looks as follows:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: nfs
+  name: nfs-<NUMBER>
 spec:
   capacity:
-    storage: 10Gi
+    storage: 100Gi
   accessModes:
     - ReadWriteMany
   nfs:
