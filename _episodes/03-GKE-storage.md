@@ -200,14 +200,14 @@ kubectl apply -n argo -f 003-pv-pvc.yaml
 Let's confirm that this worked:
 
 ```bash
-kubectl get pvc nfs -n argo
+kubectl get pvc nfs-<NUMBER> -n argo
 ```
 
 You will see output similar to this
 
 ```output
 NAME   STATUS   VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-nfs    Bound    nfs      10Gi       RWX                           5h2m
+nfs    Bound    nfs      100Gi      RWX                           5h2m
 ```
 
 Note that it may take some time before the STATUS gets to the state "Bound".
