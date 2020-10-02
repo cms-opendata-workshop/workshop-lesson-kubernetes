@@ -78,6 +78,8 @@ spec:
 ```
 
 Replace all occurences of `<NUMBER>` by your account number, e.g. `023`.
+You can edit files directly in the console or by opening the built-in
+graphical editor.
 Then apply the manifest:
 
 ```shell
@@ -143,7 +145,7 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: nfs
+  name: nfs-<NUMBER>
   namespace: argo
 spec:
   accessModes:
@@ -163,10 +165,7 @@ kubectl get -n argo svc nfs-server-<NUMBER> |grep ClusterIP | awk '{ print $3; }
 
 This command queries the `nfs-server` service that we created above
 and then filters out the `ClusterIP` that we need to connect to the
-NFS server. Replace `<NUMBER>` as before.
-
-You can edit files directly in the console or by opening the built-in
-graphical editor.
+NFS server. Replace `<NUMBER>` as before. Also, adjust the `<NUMBER>`.
 
 Apply this manifest:
 
