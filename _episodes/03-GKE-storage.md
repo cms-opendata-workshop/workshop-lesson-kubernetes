@@ -72,6 +72,8 @@ spec:
             name: mypvc
       volumes:
         - name: mypvc
+          capacity:
+            storage: 100Gi
           gcePersistentDisk:
             pdName: gce-nfs-disk-<NUMBER>
             fsType: ext4
