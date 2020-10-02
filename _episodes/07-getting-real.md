@@ -13,7 +13,12 @@ keypoints:
 So far we've run smaller examples, but now we have everything at hands to run
 physics analysis jobs in parallel.
 
-Create a workflow file `higgs-tau-tau-workflow.yaml` with the following content:
+Download the workflow with the following command:
+
+```shell
+curl -OL https://raw.githubusercontent.com/cms-opendata-workshop/workshop-payload-kubernetes/master/higgs-tau-tau-workflow.yaml
+```
+The file will look something like this:
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
