@@ -20,7 +20,7 @@ curl -OL https://raw.githubusercontent.com/cms-opendata-workshop/workshop-payloa
 ```
 The file will look something like this:
 
-~~~
+~~~yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
