@@ -66,7 +66,8 @@ Install it into your working environment with the following commands
 ```bash
 kubectl create ns argo
 kubectl apply -n argo -f https://raw.githubusercontent.com/argoproj/argo/stable/manifests/quick-start-postgres.yaml
-curl -sLO https://github.com/argoproj/argo/releases/download/v2.11.1/argo-linux-amd64
+curl -sLO https://github.com/argoproj/argo/releases/download/v2.11.1/argo-darwin-amd64.gz
+gunzip argo-darwin-amd64.gz
 chmod +x argo-linux-amd64
 sudo mv ./argo-linux-amd64 /usr/local/bin/argo
 ```
@@ -241,7 +242,7 @@ Once the job is done, you will see something like:
 ls -l /mnt/vol: total 20 drwx------ 2 root root 16384 Sep 22 08:36 lost+found -rw-r--r-- 1 root root 18 Sep 22 08:36 test.txt
 ```
 
-## Get the ouput file
+## Get the output file
 
 The example job above produced a text file as an output. It resides in the persistent volume that the workflow job has created.
 To copy the file from that volume to the cloud shell, we will define a container, a "storage pod" and mount the volume there so that we can get access to it.
