@@ -36,10 +36,87 @@ repository.
 
 ```shell
 kubectl apply -n argo -f https://raw.githubusercontent.com/cms-opendata-workshop/workshop-payload-kubernetes/master/001-nfs-server.yaml
-kubectl apply -n argo -f https://raw.githubusercontent.com/cms-opendata-workshop/workshop-payload-kubernetes/master/002-nfs-server-service.yaml
 ```
 
-Then download the manifest needed to create the _PersistentVolume_ and
+The file looks like this:
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nfs-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: nfs-server-<NUMBER>
+  template:
+    metadata:
+      labels:
+        role: nfs-server-<NUMBER>
+    spec:
+      containers:
+      - name: nfs-server-<NUMBER>
+        image: gcr.io/google_containers/volume-nfs:0.8
+        ports:
+          - name: nfs
+            containerPort: 2049
+          - name: mountd
+            containerPort: 20048
+          - name: rpcbind
+            containerPort: 111
+        securityContext:
+          privileged: true
+        volumeMounts:
+          - mountPath: /exports
+            name: mypvc
+      volumes:
+        - name: mypvc
+          gcePersistentDisk:
+            pdName: gce-nfs-disk-<NUMBER>
+            fsType: ext4
+```
+
+Replace all occurences of `<NUMBER>` by your account number, e.g. `023`.
+Then apply the manifest:
+
+```shell
+kubectl apply -n argo -f 001-nfs-server.yaml
+```
+
+Then on to the server service:
+
+```shell
+curl -OL https://raw.githubusercontent.com/cms-opendata-workshop/workshop-payload-kubernetes/master/002-nfs-server-service.yaml
+```
+
+This looks like this:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nfs-server-<NUMBER>
+spec:
+  ports:
+    - name: nfs
+      port: 2049
+    - name: mountd
+      port: 20048
+    - name: rpcbind
+      port: 111
+  selector:
+    role: nfs-server-<NUMBER>
+```
+
+As above, replace all occurences of `<NUMBER>` by your account number, e.g. `023`
+and apply the manifest:
+
+```shell
+kubectl apply -n argo -f 002-nfs-server-service.yaml
+```
+
+Download the manifest needed to create the _PersistentVolume_ and
 the _PersistentVolumeClaim_:
 
 ```shell
