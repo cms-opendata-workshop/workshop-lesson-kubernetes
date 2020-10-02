@@ -19,7 +19,7 @@ Create a workflow file `higgs-tau-tau-workflow.yaml` with the following content:
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  generateName: higgs-tau-tau-
+  generateName: parallelism-nested-
 spec:
   arguments:
     parameters:
@@ -63,7 +63,6 @@ spec:
       - name: histogram-list
     dag:
       tasks:
-
       - name: skim-step
         template: skim-template
         arguments:
@@ -73,7 +72,6 @@ spec:
           - name: x-section
             value: "{{item.x-section}}"
         withParam: "{{inputs.parameters.files-list}}"
-
       - name: histogram-step
         dependencies: [skim-step]
         template: histogram-template
@@ -182,8 +180,7 @@ spec:
         python fit.py /mnt/vol/histogram.root /mnt/vol
         ls -l /mnt/vol
       volumeMounts:
-      - name: task-pv-storage
-        mountPath: /mnt/vol
+
 ```
 
 Adjust the workflow as follows:
