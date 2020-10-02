@@ -23,7 +23,21 @@ Cluster autoscaler also scales down the cluster to save resources. If the autosc
 
 To configure the autoscaler you simply specify a minimum and maximum for the node pool. The autoscaler then periodically checks the status of the pods and takes acton accordingly. You can set the configuration either with the `gcloud` command-line tool or via the dashboard.
 
-## Deleting workflows automatically
+## Deleting pods automatically
+
+Argo allows you to describes the strategy to use when deleting completed pods. The pods are deleted automatically without deleting the workflow. Define one of the follwoing stategies in your Argo workflow under the field `spec`:
+
+```yaml
+spec:
+  podGC:
+    # pod gc strategy must be one of the following
+    # * OnPodCompletion - delete pods immediately when pod is completed (including errors/failures)
+    # * OnPodSuccess - delete pods immediately when pod is successful
+    # * OnWorkflowCompletion - delete pods when workflow is completed
+    # * OnWorkflowSuccess - delete pods when workflow is successful
+    strategy: OnPodSuccess
+```
+
 
 ## Scaling down
 

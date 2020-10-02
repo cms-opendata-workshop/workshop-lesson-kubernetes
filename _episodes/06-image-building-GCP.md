@@ -30,7 +30,7 @@ FLAGS=$(root-config --cflags --libs)
 $COMPILER -g -O3 -Wall -Wextra -Wpedantic -o skim skim.cxx $FLAGS
 ```
 
-Finally ceate the file `Dockerfile` with the following contents
+Finally create a Dockerfile that executes everything mentioned above. Create the file `Dockerfile` with the following contents
 
 ```yaml
 # The Dockerfile defines the image's environment
@@ -60,24 +60,21 @@ Building your Docker image on GCP is done in the same way as you were showed ear
 docker build -t [IMAGE-NAME]:[TAG] .
 ```
 
-If you do not specify a container registry you will push your image to DockerHub, the default registry. We want to push our images to the GCP container registry. To do so we need to name it
+If you do not specify a container registry your image will be pushed to DockerHub, the default registry. We would like to push our images to the GCP container registry. To do so we need to name it `gcr.io/[PROJECT-ID]/[IMAGE-NAME]:[TAG]`
+, where `[PROJECT-ID]` is your GCP project ID. You can find your ID by clicking your project in the top left corner. In our case the ID is `cern-cms`.  The hostname `gcr.io` tells the client to push it to the GCP registry.
+
+`[IMAGE-NAME]` and `[TAG]` are up to you to choose, however rule of thumb is to be as descriptive as possible. Due to Docker naming rules we aslo have to keep them lowercase. One example of how the command could look like is:
 
 ```shell
- gcr.io/[PROJECT-ID]/[IMAGE-NAME]:[TAG]
+docker build -t gcr.io/cern-cms/root-conda-<NUMBER>:higgstautau .
 ```
-
-where `[PROJECT-ID]` is your GCP project ID. You can find your ID by clicking your project in the top left corner. In our case the ID is `cern-cms`.  The registry hostname is `gcr.io`. `[IMAGE-NAME]` and `[TAG]` are up to you to choose, however rule of thumb is to be as descriptive as possible. Due to Docker naming rules we aslo have to keep them lowercase. One example of how the command could look like is this. 
-
-```shell
-docker build -t gcr.io/cern-cms/cms-gXXX:higgstautau .
-```
-Replace `XXX` with the number for the login credentials you received.
+Replace `<NUMBER>` with the number for the login credentials you received.
 
 > ## Choose a unique name
 >
 >Note that all attendants of this workshop are sharing the same registry! If you fail to choose a 
 >unique name and tag combination you risk overwriting the image of a fellow attendee. Naming your
->image with the number of your login credentials should avoid that from happening.
+>image with the number of your login credentials is a good way to keep that from happening.
 {: .callout}
 
 ## Adding your image to the container registry
@@ -91,12 +88,12 @@ gcloud auth configure-docker
 To push the image run
 
 ```shell
-docker push gcr.io/cern-cms/cms-gXXX:higgstautau
+docker push gcr.io/cern-cms/root-conda-<NUMBER>:higgstautau
 ```
 
 > ## View your images
 >
-> You can view images hosted by the container registry via the cloud console, or by visiting the image's registry name in your web browser at `http://gcr.io/cern-cms/cms-gXXX`.
+> You can view images hosted by the container registry via the cloud console, or by visiting the image's registry name in your web browser at `http://gcr.io/cern-cms/root-conda-<NUMBER>`.
 {: .callout}
 
 ## Cleaning up your private registry
@@ -104,5 +101,5 @@ docker push gcr.io/cern-cms/cms-gXXX:higgstautau
 To avoid incurring charges to your GCP account you can remove your Docker image from the container registry. Run the follwoing command
 
 ```shell
-gcloud container images delete gcr.io/cern-cms/cms-gXXX:higgstautau --force-delete-tags
+gcloud container images delete gcr.io/cern-cms/root-conda-<NUMBER>:higgstautau --force-delete-tags
 ```
