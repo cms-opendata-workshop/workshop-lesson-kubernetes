@@ -135,7 +135,7 @@ and the job resources.
 > In the following, we will run the
 > [Analysis of Higgs boson decays to two tau leptons using data and simulation of events at the CMS detector from 2012 ](http://opendata.web.cern.ch/record/12350),
 > for which 9 different records are listed on the webpage. We only downloaded
-> the (GluGluToHToTauTau dataset)[http://opendata.web.cern.ch/record/12351]
+> the [GluGluToHToTauTau dataset](http://opendata.web.cern.ch/record/12351)
 > so far.
 > Can you download the remaining ones using `Jobs`?
 >
