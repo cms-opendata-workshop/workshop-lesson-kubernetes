@@ -21,11 +21,11 @@ Cluster autoscaler keeps an eye on the pods scheduled and checks if adding a new
 
 Cluster autoscaler also scales down the cluster to save resources. If the autoscaler notices that one or more nodes are not needed for an extended period of time (currently set to 10 minutes) it downscales the cluster.
 
-To configure the autoscaler you simply specify a minimum and maximum for the node pool. The autoscaler then periodically checks the status of the pods and takes acton accordingly. You can set the configuration either with the `gcloud` command-line tool or via the dashboard.
+To configure the autoscaler you simply specify a minimum and maximum for the node pool. The autoscaler then periodically checks the status of the pods and takes action accordingly. You can set the configuration either with the `gcloud` command-line tool or via the dashboard.
 
 ## Deleting pods automatically
 
-Argo allows you to describes the strategy to use when deleting completed pods. The pods are deleted automatically without deleting the workflow. Define one of the follwoing stategies in your Argo workflow under the field `spec`:
+Argo allows you to describes the strategy to use when deleting completed pods. The pods are deleted automatically without deleting the workflow. Define one of the following strategies in your Argo workflow under the field `spec`:
 
 ```yaml
 spec:
@@ -41,7 +41,7 @@ spec:
 
 ## Scaling down
 
-Occasionally, the cluster autoscaler cannot scale down completely and extra nodes are left hanging behind. Some sithuations like those can be found documented [here](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#i-have-a-couple-of-nodes-with-low-utilization-but-they-are-not-scaled-down-why). Therefore it is useful to know how to manually scale down your cluster.
+Occasionally, the cluster autoscaler cannot scale down completely and extra nodes are left hanging behind. Some situations like those can be found documented [here](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#i-have-a-couple-of-nodes-with-low-utilization-but-they-are-not-scaled-down-why). Therefore it is useful to know how to manually scale down your cluster.
 
 Click on your cluster, listed at `Kubernetes Engine - Clusters`. Scroll down to the end of the page where you will find the `Node pools` section. Clicking on your node pool will take you to its details page.
 
