@@ -22,7 +22,7 @@ Kubernetes provides a large amount of
 
 The test job above did not produce any output data files, just text logs.
 The data analysis jobs will produce output files and, in the following, we will
-go through a few steps to setup a volume where to which the output files will be
+go through a few steps to setup a volume where the output files will be
 written and from where they can be fetched.
 All definitions are passed as "yaml" files, which you've already used in the
 steps above. Due to some restrictions of the Google Kubernetes Engine, we need
@@ -65,7 +65,7 @@ curl -LO https://raw.githubusercontent.com/cms-opendata-workshop/workshop-payloa
 The file looks like this:
 
 ```yaml
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nfs-server-<NUMBER>
@@ -189,7 +189,7 @@ kubectl get -n argo svc nfs-server-<NUMBER> |grep ClusterIP | awk '{ print $3; }
 
 This command queries the `nfs-server` service that we created above
 and then filters out the `ClusterIP` that we need to connect to the
-NFS server. Replace `<NUMBER>` as before. Also, adjust the `<NUMBER>`.
+NFS server. Replace `<NUMBER>` as before.
 
 Apply this manifest:
 
@@ -395,6 +395,9 @@ metadata:
 spec:
   replicas: 1
   strategy: {}
+  selector:
+    matchLabels:
+      service: http-fileserver
   template:
     metadata:
       labels:
@@ -424,7 +427,6 @@ Apply and expose the port as a `LoadBalancer`:
 ```shell
 kubectl create -n argo -f deployment-http-fileserver.yaml
 kubectl expose deployment http-fileserver -n argo --type LoadBalancer --port 80 --target-port 80
-kubectl get pods -n argo
 ```
 
 Exposing the deployment will take a few minutes. Run the following command to
@@ -467,5 +469,11 @@ kubectl exec http-fileserver-XXXXXXXX-YYYYY -n argo -- rm /usr/share/nginx/html/
 > Run the `kubectl expose deployment` command to expose it again.
 >
 {: .testimonial}
+
+Remember to delete your workflow again to avoid additional charges.
+
+```shell
+argo delete -n argo @latest
+```
 
 {% include links.md %}
