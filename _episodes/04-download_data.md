@@ -128,7 +128,18 @@ kubectl apply -n argo -f job-data-download.yaml
 ```
 
 The job will create a pod, and you can monitor the progress both via the pod
-and the job resources.
+and the job resources:
+
+```shell
+kubectl get pod -n argo
+kubectl get job -n argo
+```
+
+The files are downloaded to the storage volume, and you can see them through the fileserver as instructed in the previous episode or through the storage pod:
+
+```shell
+kubectl exec pod/pv-pod -n argo -- ls /mnt/data/
+```
 
 > ## Challenge: Download all records needed
 >
